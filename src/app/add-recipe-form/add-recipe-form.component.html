@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Añadir Receta</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="submitRecipe()">
+    <ion-item>
+      <ion-label position="floating">Título</ion-label>
+      <ion-input [(ngModel)]="recipe.title" name="title" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Dificultad</ion-label>
+      <ion-select [(ngModel)]="recipe.difficulty" name="difficulty" required>
+        <ion-select-option value="1">Muy Fácil</ion-select-option>
+        <ion-select-option value="2">Fácil</ion-select-option>
+        <ion-select-option value="3">Normal</ion-select-option>
+        <ion-select-option value="4">Difícil</ion-select-option>
+        <ion-select-option value="5">Muy Difícil</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Tiempo (minutos)</ion-label>
+      <ion-input
+        [(ngModel)]="recipe.time"
+        name="time"
+        type="number"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-button
+      expand="full"
+      type="submit"
+      [disabled]="!recipe.title || !recipe.difficulty || !recipe.time"
+    >
+      Añadir Receta
+    </ion-button>
+  </form>
+</ion-content>

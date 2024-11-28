@@ -1,0 +1,9 @@
+<div class="recipes-list">
+  <app-card
+    *ngFor="let recipe of recipes"
+    [id]="recipe.id ?? 0"
+    [title]="recipe.title"
+    [difficulty]="recipe.difficulty"
+    [time]="recipe.time"
+  ></app-card>
+</div>

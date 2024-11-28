@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Recetas </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openModal()">Añadir Receta</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-recipes-list></app-recipes-list>
+</ion-content>
+
+<ion-modal *ngIf="isModalOpen" (ionModalDidDismiss)="closeModal()">
+  <app-add-recipe-form (recipeAdded)="closeModal()"></app-add-recipe-form>
+</ion-modal>

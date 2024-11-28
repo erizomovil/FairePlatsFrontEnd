@@ -1,0 +1,25 @@
+.recipes-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+app-card {
+  flex: 0 1 calc(25% - 20px);
+  margin: 10px;
+  transition: transform 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+app-card:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 475px) {
+  app-card {
+    flex: 0 1 100%;
+  }
+}

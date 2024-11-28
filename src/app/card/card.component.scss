@@ -1,0 +1,75 @@
+ion-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+  margin: 10px;
+  border-radius: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  height: 135px;
+  flex: 1 1 calc(25% - 20px);
+}
+
+ion-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 30px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+ion-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+ion-card-header {
+  padding: 0;
+  margin: 0;
+}
+
+ion-card-title {
+  font-size: 20px;
+  color: black;
+}
+
+ion-label {
+  font-size: 14px;
+  color: black;
+}
+
+.recipe-card-description {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: black;
+}
+
+.recipe-card-description ion-icon {
+  font-size: 20px;
+  margin-right: 8px;
+  color: black;
+}
+
+.recipe-card-timer {
+  font-size: 20px;
+  margin-right: 5px;
+  color: black;
+}
+
+ion-card-content ion-label {
+  margin-top: 5px;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+}
+
+ion-button {
+  margin: 0;
+}

@@ -1,0 +1,5 @@
+<ion-icon
+  *ngFor="let star of [].constructor(5); let i = index"
+  [name]="i < rating ? 'star' : 'star-outline'"
+  style="font-size: 25px; color: #fd1818"
+></ion-icon>
