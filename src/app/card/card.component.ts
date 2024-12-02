@@ -13,6 +13,21 @@ export class CardComponent {
   @Input() title: string = '';
   @Input() difficulty: number = 0;
   @Input() time: number = 0;
+  @Input() image: string | null = null;
+
+  getImageUrl(): string {
+    if (!this.image) {
+      return 'assets/images/placeholder_image.jpg';
+    }
+    if (this.image.startsWith('http') || this.image.startsWith('https')) {
+      return this.image;
+    }
+    console.warn(
+      'Formato de imagen no válido, usando imagen por defecto:',
+      this.image
+    );
+    return 'assets/images/placeholder_image.jpg';
+  }
 
   constructor(
     private recipeService: RecipeService,
@@ -42,7 +57,6 @@ export class CardComponent {
       steps: '',
     };
 
-    // Abre el modal con los datos de la receta
     const modal = await this.modalController.create({
       component: AddRecipeFormComponent,
       componentProps: { recipeToEdit: recipeToEdit },

@@ -3,7 +3,7 @@ export interface Recipe {
   title: string;
   difficulty: number;
   time: number;
-  image: string;
+  image: string | null;
   ingredients: String;
   steps: String;
 }

@@ -8,7 +8,7 @@
     </ion-card-content>
   </ng-container>
   <ng-template #defaultView>
-    <ion-img src="" alt="Fried Egg"></ion-img>
+    <ion-img [src]="getImageUrl()" alt="{{ title }}"></ion-img>
     <ion-card-content>
       <ion-card-header>
         <ion-card-title>{{ title }}</ion-card-title>

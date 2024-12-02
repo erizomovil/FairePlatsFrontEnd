@@ -1,4 +1,3 @@
-// src/app/components/recipes-list/recipes-list.component.ts
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { Recipe } from '../models/recipe.models';
 import { RecipeService } from '../service/recipe.service';
