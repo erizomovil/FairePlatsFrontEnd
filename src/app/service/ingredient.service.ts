@@ -18,16 +18,4 @@ export class IngredientService {
   getIngredient(id: number): Observable<Ingredient> {
     return this.http.get<Ingredient>(`${this.apiUrl}/${id}`);
   }
-
-  addIngredient(ingredient: Ingredient): Observable<Ingredient> {
-    return this.http.post<Ingredient>(this.apiUrl, ingredient);
-  }
-
-  updateIngredient(id: number, ingredient: Ingredient): Observable<Ingredient> {
-    return this.http.put<Ingredient>(`${this.apiUrl}/${id}`, ingredient);
-  }
-
-  deleteIngredient(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
-  }
 }

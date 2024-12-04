@@ -6,7 +6,6 @@ import { StaticStarsComponent } from '../static-stars/static-stars.component';
 
 @Component({
   selector: 'app-card',
-  imports: [StaticStarsComponent],
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
 })

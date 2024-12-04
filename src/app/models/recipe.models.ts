@@ -4,6 +4,4 @@ export interface Recipe {
   difficulty: number;
   time: number;
   image: string | null;
-  ingredients: String;
-  steps: String;
 }

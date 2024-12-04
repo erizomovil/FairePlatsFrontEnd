@@ -1,45 +1,31 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="handleNavigationHome()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>{{ recipe?.title }}</ion-title>
+    <ion-title>Recipe Details</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="recipe-details">
-    <div class="recipe-details-image-container">
-      <img
-        [src]="imageError ? '/assets/img/placeholder_image.jpg' : recipe?.image"
-        alt="Imagen de {{ recipe?.title }}"
-        class="recipe-details-recipe-image"
-        (error)="handleImageError()"
-      />
-    </div>
+<ion-content *ngIf="!isLoading; else loadingTemplate">
+  <ion-card *ngIf="recipe">
+    <ion-card-header>
+      <ion-card-title>{{ recipe.title }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Time:</strong> {{ recipe.time }} minutes</p>
+      <p><strong>Difficulty:</strong> {{ recipe.difficulty }}</p>
+    </ion-card-content>
+  </ion-card>
 
-    <p class="recipe-details-recipe-title">{{ recipe?.title }}</p>
-
-    <div class="recipe-details-rating-container">
-      <app-static-stars [rating]="5"></app-static-stars>
-      <div>
-        <ion-icon name="timer-outline" class="recipe-card-timer"></ion-icon>
-        <span>{{ recipe?.time }}'</span>
-      </div>
-    </div>
-
-    <app-recipe-ingredients
-      [ingredientIds]="recipe?.ingredients"
-    ></app-recipe-ingredients>
-
-    <ion-button
-      class="recipe-details-continue-button"
-      [disabled]="isButtonDisabled"
-      (click)="handleNavigationNext()"
-    >
-      Let's Cook
-    </ion-button>
-  </div>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Ingredients</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let ingredient of ingredients">
+      {{ ingredient.title }}
+    </ion-item>
+  </ion-list>
 </ion-content>
+
+<ng-template #loadingTemplate>
+  <ion-spinner></ion-spinner>
+  <p>Loading...</p>
+</ng-template>

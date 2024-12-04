@@ -14,8 +14,6 @@ export class AddRecipeFormComponent {
     difficulty: 1,
     time: 0,
     image: '',
-    ingredients: '',
-    steps: '',
   };
   isEditMode: boolean = false;
   recipeId: number | undefined = undefined;
