@@ -16,7 +16,6 @@ import { AddRecipeFormComponent } from '../add-recipe-form/add-recipe-form.compo
     HomePage,
     RecipesListComponent,
     CardComponent,
-    StaticStarsComponent,
     AddRecipeFormComponent,
   ],
 })

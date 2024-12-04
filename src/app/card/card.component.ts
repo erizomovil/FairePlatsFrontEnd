@@ -2,9 +2,11 @@ import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { RecipeService } from '../service/recipe.service';
 import { AddRecipeFormComponent } from '../add-recipe-form/add-recipe-form.component';
+import { StaticStarsComponent } from '../static-stars/static-stars.component';
 
 @Component({
   selector: 'app-card',
+  imports: [StaticStarsComponent],
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
 })
