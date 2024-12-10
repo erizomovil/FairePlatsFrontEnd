@@ -15,6 +15,8 @@ export class RecipeDetailsPage implements OnInit {
   recipe!: Recipe;
   ingredients: Ingredient[] = [];
   isLoading = true;
+  isEditing = false;
+  id = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +27,7 @@ export class RecipeDetailsPage implements OnInit {
 
   ngOnInit() {
     const recipeId = Number(this.route.snapshot.paramMap.get('id'));
+    this.id = recipeId;
 
     this.recipeService.getRecipe(recipeId).subscribe({
       next: (recipe) => {
@@ -78,5 +81,63 @@ export class RecipeDetailsPage implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  openEditForm() {
+    this.isEditing = true;
+  }
+
+  cancelEdit() {
+    this.isEditing = false;
+  }
+
+  submitEditForm() {
+    if (this.recipe.id) {
+      this.recipeService.updateRecipe(this.recipe.id, this.recipe).subscribe({
+        next: () => {
+          this.isEditing = false;
+          console.log('Recipe updated successfully');
+          this.loadRecipe();
+        },
+        error: (err) => {
+          console.error('Error updating recipe', err);
+        },
+      });
+    } else {
+      console.error('Recipe ID is missing');
+    }
+  }
+
+  loadRecipe() {
+    const recipeId = Number(this.route.snapshot.paramMap.get('id'));
+    this.recipeService.getRecipe(recipeId).subscribe({
+      next: (recipe) => {
+        this.recipe = recipe;
+        this.loadIngredients(recipeId);
+      },
+      error: (err) => {
+        console.error('Error loading recipe', err);
+        this.isLoading = false;
+      },
+    });
+  }
+  eliminarRelacion(ingredientId: number) {
+    this.ingredientsRecipesService
+      .deleteIngredientRecipe(this.id, ingredientId)
+      .subscribe(
+        (response) => {
+          console.log('Ingrediente eliminado', response);
+          this.ingredients = this.ingredients.filter(
+            (ingredient) => ingredient.id !== ingredientId
+          );
+        },
+        (error) => {
+          console.error('Error al eliminar ingrediente', error);
+        }
+      );
+  }
+
+  agregarIngrediente() {
+    console.log('Agregar nuevo ingrediente');
   }
 }

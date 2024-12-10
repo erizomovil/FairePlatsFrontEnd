@@ -2,13 +2,13 @@
   <ion-toolbar>
     <ion-title>Recipe Details</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="null">Editar Receta</ion-button>
+      <ion-button (click)="openEditForm()">Editar Receta</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content *ngIf="!isLoading; else loadingTemplate">
-  <ion-card *ngIf="recipe">
+  <ion-card *ngIf="!isEditing && recipe">
     <ion-card-header>
       <ion-card-title>{{ recipe.title }}</ion-card-title>
     </ion-card-header>
@@ -18,14 +18,49 @@
     </ion-card-content>
   </ion-card>
 
+  <form *ngIf="isEditing" (ngSubmit)="submitEditForm()">
+    <ion-item>
+      <ion-label position="floating">Título</ion-label>
+      <ion-input [(ngModel)]="recipe.title" name="title" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Dificultad</ion-label>
+      <ion-select [(ngModel)]="recipe.difficulty" name="difficulty" required>
+        <ion-select-option value="1">Muy Fácil</ion-select-option>
+        <ion-select-option value="2">Fácil</ion-select-option>
+        <ion-select-option value="3">Normal</ion-select-option>
+        <ion-select-option value="4">Difícil</ion-select-option>
+        <ion-select-option value="5">Muy Difícil</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Tiempo (minutos)</ion-label>
+      <ion-input
+        [(ngModel)]="recipe.time"
+        name="time"
+        type="number"
+        required
+      ></ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit">Guardar Cambios</ion-button>
+    <ion-button expand="full" color="light" (click)="cancelEdit()"
+      >Cancelar</ion-button
+    >
+  </form>
+
   <ion-list>
     <ion-list-header>
       <ion-label>Ingredients</ion-label>
     </ion-list-header>
     <ion-item *ngFor="let ingredient of ingredients">
       {{ ingredient.title }}
+      <ion-icon
+        name="trash"
+        slot="end"
+        (click)="eliminarRelacion(ingredient.id)"
+      ></ion-icon>
     </ion-item>
-    <ion-item slot="center">+</ion-item>
+    <ion-item slot="center" (click)="agregarIngrediente()"> + </ion-item>
   </ion-list>
 </ion-content>
 
