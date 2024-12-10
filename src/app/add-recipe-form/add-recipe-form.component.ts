@@ -1,37 +1,57 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Recipe } from '../models/recipe.models';
 import { RecipeService } from '../service/recipe.service';
+import { IngredientService } from '../service/ingredient.service';
+import { IngredientsRecipesService } from '../service/relation.service';
+import { Ingredient } from '../models/ingredient.models';
+import { Relation } from '../models/relation.models';
 
 @Component({
   selector: 'app-add-recipe-form',
   templateUrl: './add-recipe-form.component.html',
   styleUrls: ['./add-recipe-form.component.scss'],
 })
-export class AddRecipeFormComponent {
+export class AddRecipeFormComponent implements OnInit {
   recipe: Recipe = {
     title: '',
     difficulty: 1,
     time: 0,
     image: '',
+    ingredients: [],
   };
-  isEditMode: boolean = false;
-  recipeId: number | undefined = undefined;
 
-  @Input() set recipeToEdit(recipe: Recipe | null) {
-    if (recipe && recipe.id !== null) {
-      this.recipe = { ...recipe };
-      this.isEditMode = true;
-      this.recipeId = recipe.id;
-    }
-  }
+  ingredients: Ingredient[] = [];
+  ingredientRelations: Relation[] = [];
 
   @Output() recipeAdded = new EventEmitter<boolean>();
 
   constructor(
     private modalController: ModalController,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private ingredientService: IngredientService,
+    private ingredientsRecipesService: IngredientsRecipesService
   ) {}
+
+  ngOnInit() {
+    this.loadIngredients();
+  }
+
+  loadIngredients() {
+    this.ingredientService.getIngredients().subscribe({
+      next: (ingredients) => {
+        this.ingredients = ingredients;
+      },
+      error: (err) => {
+        console.error('Error al cargar los ingredientes:', err);
+      },
+    });
+  }
+
+  getIngredientTitleById(ingredientId: number): string {
+    const ingredient = this.ingredients.find((ing) => ing.id === ingredientId);
+    return ingredient ? ingredient.title : 'Desconocido';
+  }
 
   dismiss() {
     this.modalController.dismiss();
@@ -39,34 +59,60 @@ export class AddRecipeFormComponent {
 
   submitRecipe() {
     if (this.recipe.title && this.recipe.difficulty && this.recipe.time) {
-      if (this.isEditMode && this.recipeId !== undefined) {
-        console.log('Editando receta:', this.recipe);
-        this.recipeService.updateRecipe(this.recipeId, this.recipe).subscribe({
-          next: (updatedRecipe) => {
-            console.log('Receta actualizada', updatedRecipe);
-            this.recipeAdded.emit(true);
-            this.dismiss();
-          },
-          error: (err) => {
-            console.error('Error al editar la receta:', err);
-            this.recipeAdded.emit(false);
-          },
-        });
-      } else {
-        console.log('Enviando receta:', this.recipe);
-        this.recipeService.addRecipe(this.recipe).subscribe({
-          next: (newRecipe) => {
-            this.recipeAdded.emit(true);
-            this.dismiss();
-          },
-          error: (err) => {
-            console.error('Error al añadir la receta:', err);
-            this.recipeAdded.emit(false);
-          },
-        });
-      }
+      this.recipeService.addRecipe(this.recipe).subscribe({
+        next: (newRecipe) => {
+          const recipeId = newRecipe.id!;
+
+          // Usamos la estructura nueva que esperas
+          const relations = this.ingredientRelations.map((rel) => ({
+            recipe: {
+              id: recipeId,
+            },
+            ingredient: {
+              id: rel.ingredient.id,
+            },
+            quantity: rel.quantity,
+          }));
+
+          console.log(relations);
+          this.ingredientsRecipesService.createRelations(relations).subscribe({
+            next: () => {
+              console.log('Relaciones creadas');
+              this.recipeAdded.emit(true);
+              this.dismiss();
+            },
+            error: (err) => {
+              console.error('Error al crear relaciones:', err);
+              this.recipeAdded.emit(false);
+            },
+          });
+        },
+        error: (err) => {
+          console.error('Error al añadir receta:', err);
+          this.recipeAdded.emit(false);
+        },
+      });
     } else {
       console.error('Faltan campos requeridos.');
     }
+  }
+
+  updateIngredientSelection(selectedIds: number[]) {
+    this.ingredientRelations = this.ingredientRelations.filter((rel) =>
+      selectedIds.includes(rel.ingredient.id)
+    );
+    selectedIds.forEach((idIngredient) => {
+      if (
+        !this.ingredientRelations.some(
+          (rel) => rel.ingredient.id === idIngredient
+        )
+      ) {
+        this.ingredientRelations.push({
+          recipe: { id: 0 },
+          ingredient: { id: idIngredient },
+          quantity: '0',
+        });
+      }
+    });
   }
 }

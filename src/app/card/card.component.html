@@ -1,25 +1,15 @@
-<ion-card (click)="showOptions($event)">
-  <ng-container *ngIf="showButtons; else defaultView">
-    <ion-card-content>
-      <div class="button-container">
-        <ion-button color="primary" (click)="edit($event)">Editar</ion-button>
-        <ion-button color="danger" (click)="delete($event)">Borrar</ion-button>
-      </div>
-    </ion-card-content>
-  </ng-container>
-  <ng-template #defaultView>
-    <ion-img [src]="getImageUrl()" alt="{{ title }}"></ion-img>
-    <ion-card-content>
-      <ion-card-header>
-        <ion-card-title>{{ title }}</ion-card-title>
-      </ion-card-header>
-      <ion-label>
-        <app-static-stars [rating]="difficulty"></app-static-stars>
-      </ion-label>
-      <div class="recipe-card-description">
-        <ion-icon name="timer-outline" class="recipe-card-timer"></ion-icon>
-        <span>{{ time }}'</span>
-      </div>
-    </ion-card-content>
-  </ng-template>
+<ion-card (click)="redirectToRecipeDetails()">
+  <ion-img [src]="getImageUrl()" alt="{{ title }}"></ion-img>
+  <ion-card-content>
+    <ion-card-header>
+      <ion-card-title>{{ title }}</ion-card-title>
+    </ion-card-header>
+    <ion-label>
+      <app-static-stars [rating]="difficulty"></app-static-stars>
+    </ion-label>
+    <div class="recipe-card-description">
+      <ion-icon name="timer-outline" class="recipe-card-timer"></ion-icon>
+      <span>{{ time }}'</span>
+    </div>
+  </ion-card-content>
 </ion-card>

@@ -7,7 +7,7 @@ import { Relation } from '../models/relation.models';
   providedIn: 'root',
 })
 export class IngredientsRecipesService {
-  private apiUrl = 'http://localhost:8080/ingredients-recipes';
+  private apiUrl = 'http://localhost:8080/ingredientsRecipes';
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -17,6 +17,14 @@ export class IngredientsRecipesService {
 
   createIngredientRecipe(relation: Relation): Observable<Relation> {
     return this.http.post<Relation>(this.apiUrl, relation, this.httpOptions);
+  }
+
+  createRelations(relations: Relation[]): Observable<Relation[]> {
+    return this.http.post<Relation[]>(
+      `${this.apiUrl}/bulk`,
+      relations,
+      this.httpOptions
+    );
   }
 
   getAllIngredientsRecipes(): Observable<Relation[]> {

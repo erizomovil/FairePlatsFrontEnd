@@ -1,7 +1,9 @@
 export interface Relation {
-  id: {
-    idRecipe: number;
-    idIngredient: number;
+  recipe: {
+    id: number;
   };
-  quantity?: number;
+  ingredient: {
+    id: number;
+  };
+  quantity: string | undefined;
 }

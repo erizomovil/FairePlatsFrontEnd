@@ -1,8 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { RecipeService } from '../service/recipe.service';
-import { AddRecipeFormComponent } from '../add-recipe-form/add-recipe-form.component';
-import { StaticStarsComponent } from '../static-stars/static-stars.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-card',
@@ -30,51 +27,9 @@ export class CardComponent {
     return 'assets/images/placeholder_image.jpg';
   }
 
-  constructor(
-    private recipeService: RecipeService,
-    private modalController: ModalController
-  ) {}
+  constructor(private router: Router) {}
 
-  showButtons: boolean = false;
-
-  showOptions(event: MouseEvent) {
-    const clickedElement = event.target as HTMLElement;
-    if (!clickedElement.closest('.button-container')) {
-      this.showButtons = !this.showButtons;
-    }
-  }
-
-  async edit(event: Event) {
-    event.stopPropagation();
-    console.log('Edit clicked');
-
-    const recipeToEdit = {
-      id: this.id,
-      title: this.title,
-      difficulty: this.difficulty,
-      time: this.time,
-      image: '',
-      ingredients: '',
-      steps: '',
-    };
-
-    const modal = await this.modalController.create({
-      component: AddRecipeFormComponent,
-      componentProps: { recipeToEdit: recipeToEdit },
-    });
-    modal.present();
-    this.showButtons = false;
-  }
-
-  delete(event: Event) {
-    event.stopPropagation();
-    this.recipeService.deleteRecipe(this.id).subscribe({
-      next: () => {
-        console.log('Receta eliminada : ' + this.id);
-      },
-      error: (err) => {
-        console.error('Error eliminando receta:', err);
-      },
-    });
+  redirectToRecipeDetails() {
+    this.router.navigate(['/recipe-details', this.id]);
   }
 }

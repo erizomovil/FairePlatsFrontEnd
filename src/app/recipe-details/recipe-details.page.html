@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Recipe Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="null">Editar Receta</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -22,6 +25,7 @@
     <ion-item *ngFor="let ingredient of ingredients">
       {{ ingredient.title }}
     </ion-item>
+    <ion-item slot="center">+</ion-item>
   </ion-list>
 </ion-content>
 

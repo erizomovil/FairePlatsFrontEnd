@@ -13,7 +13,6 @@
       <ion-label position="floating">Título</ion-label>
       <ion-input [(ngModel)]="recipe.title" name="title" required></ion-input>
     </ion-item>
-
     <ion-item>
       <ion-label position="floating">Dificultad</ion-label>
       <ion-select [(ngModel)]="recipe.difficulty" name="difficulty" required>
@@ -24,7 +23,6 @@
         <ion-select-option value="5">Muy Difícil</ion-select-option>
       </ion-select>
     </ion-item>
-
     <ion-item>
       <ion-label position="floating">Tiempo (minutos)</ion-label>
       <ion-input
@@ -34,11 +32,46 @@
         required
       ></ion-input>
     </ion-item>
-
+    <ion-item>
+      <ion-label position="floating">Ingredientes</ion-label>
+      <ion-select
+        multiple="true"
+        (ionChange)="updateIngredientSelection($event.detail.value)"
+      >
+        <ion-select-option
+          *ngFor="let ingredient of ingredients"
+          [value]="ingredient.id"
+        >
+          {{ getIngredientTitleById(ingredient.id) }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-list>
+      <ion-item *ngFor="let rel of ingredientRelations">
+        <ion-label>
+          {{
+            rel?.ingredient?.id
+              ? getIngredientTitleById(rel.ingredient.id)
+              : "Ingrediente no disponible"
+          }}
+        </ion-label>
+        <ion-input
+          type="number"
+          [(ngModel)]="rel.quantity"
+          placeholder="Cantidad"
+          [name]="'ingredient-' + rel.ingredient.id"
+        ></ion-input>
+      </ion-item>
+    </ion-list>
     <ion-button
       expand="full"
       type="submit"
-      [disabled]="!recipe.title || !recipe.difficulty || !recipe.time"
+      [disabled]="
+        !recipe.title ||
+        !recipe.difficulty ||
+        !recipe.time ||
+        ingredientRelations.length === 0
+      "
     >
       Añadir Receta
     </ion-button>

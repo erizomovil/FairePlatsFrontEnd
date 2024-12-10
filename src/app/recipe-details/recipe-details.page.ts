@@ -45,25 +45,21 @@ export class RecipeDetailsPage implements OnInit {
     this.ingredientsRecipesService.getAllIngredientsRecipes().subscribe({
       next: (relations) => {
         console.log('Relations loaded:', relations);
-
-        // Filtrar las relaciones para obtener los ids de ingredientes
         const ingredientIds = relations
-          .filter((relation) => relation.id.idRecipe === recipeId)
-          .map((relation) => relation.id.idIngredient);
+          .filter((relation) => relation.recipe.id === recipeId)
+          .map((relation) => relation.ingredient.id);
 
         console.log('Filtered Ingredient IDs:', ingredientIds);
 
         if (ingredientIds.length === 0) {
           console.log('No ingredients found for this recipe');
           this.isLoading = false;
-          return; // No hay ingredientes relacionados
+          return;
         }
 
         this.ingredientService.getIngredients().subscribe({
           next: (ingredients) => {
             console.log('Ingredients loaded:', ingredients);
-
-            // Filtrar los ingredientes según los ids
             this.ingredients = ingredients.filter((ingredient) =>
               ingredientIds.includes(ingredient.id)
             );
