@@ -1,8 +1,18 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/home">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>Recipe Details</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="openEditForm()">Editar Receta</ion-button>
+      <ion-button (click)="openEditForm()">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="deleteRecipe()">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -52,15 +62,51 @@
     <ion-list-header>
       <ion-label>Ingredients</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let ingredient of ingredients">
-      {{ ingredient.title }}
+    <ion-item *ngFor="let item of ingredientsWithQuantities">
+      <ion-label *ngIf="item.ingredient"
+        >{{ item.ingredient.title }} - {{ item.quantity }}</ion-label
+      >
       <ion-icon
+        *ngIf="item.ingredient"
         name="trash"
         slot="end"
-        (click)="eliminarRelacion(ingredient.id)"
+        (click)="deleteRelacion(item.ingredient.id)"
       ></ion-icon>
     </ion-item>
-    <ion-item slot="center" (click)="agregarIngrediente()"> + </ion-item>
+    <ion-item
+      button
+      (click)="showIngredientSelector = !showIngredientSelector"
+      slot="center"
+    >
+      + Agregar Ingrediente
+    </ion-item>
+    <ion-item *ngIf="showIngredientSelector">
+      <ion-select
+        [(ngModel)]="selectedIngredient"
+        placeholder="Seleccionar Ingrediente"
+      >
+        <ion-select-option
+          *ngFor="let ingredient of availableIngredients"
+          [value]="ingredient"
+        >
+          {{ ingredient.title }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="showIngredientSelector">
+      <ion-label position="floating">Cantidad</ion-label>
+      <ion-input
+        type="number"
+        [(ngModel)]="ingredientQuantity"
+        name="quantity"
+        required
+      ></ion-input>
+    </ion-item>
+    <ion-item *ngIf="showIngredientSelector">
+      <ion-button expand="full" (click)="addIngredient()"
+        >Agregar Ingrediente</ion-button
+      >
+    </ion-item>
   </ion-list>
 </ion-content>
 

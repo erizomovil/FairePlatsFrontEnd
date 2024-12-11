@@ -13,10 +13,20 @@ import { Ingredient } from '../models/ingredient.models';
 })
 export class RecipeDetailsPage implements OnInit {
   recipe!: Recipe;
+  originalRecipe!: Recipe;
+  ingredientsWithQuantities: {
+    ingredient: Ingredient;
+    quantity: string | undefined;
+  }[] = [];
   ingredients: Ingredient[] = [];
   isLoading = true;
   isEditing = false;
   id = 0;
+  ingredientModalOpen = false;
+  availableIngredients: Ingredient[] = [];
+  selectedIngredient: Ingredient | null = null;
+  ingredientQuantity: string = '';
+  showIngredientSelector = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,8 +41,8 @@ export class RecipeDetailsPage implements OnInit {
 
     this.recipeService.getRecipe(recipeId).subscribe({
       next: (recipe) => {
-        console.log('Recipe loaded:', recipe);
         this.recipe = recipe;
+        this.originalRecipe = { ...recipe };
         this.loadIngredients(recipeId);
       },
       error: (err) => {
@@ -42,32 +52,28 @@ export class RecipeDetailsPage implements OnInit {
     });
   }
 
-  private loadIngredients(recipeId: number) {
-    console.log('Loading ingredients for recipe:', recipeId);
-
+  loadIngredients(recipeId: number) {
     this.ingredientsRecipesService.getAllIngredientsRecipes().subscribe({
       next: (relations) => {
-        console.log('Relations loaded:', relations);
-        const ingredientIds = relations
-          .filter((relation) => relation.recipe.id === recipeId)
-          .map((relation) => relation.ingredient.id);
-
-        console.log('Filtered Ingredient IDs:', ingredientIds);
-
-        if (ingredientIds.length === 0) {
-          console.log('No ingredients found for this recipe');
-          this.isLoading = false;
-          return;
-        }
+        const filteredRelations = relations.filter(
+          (relation) => relation.recipe.id === recipeId
+        );
 
         this.ingredientService.getIngredients().subscribe({
           next: (ingredients) => {
-            console.log('Ingredients loaded:', ingredients);
-            this.ingredients = ingredients.filter((ingredient) =>
-              ingredientIds.includes(ingredient.id)
+            this.ingredients = ingredients;
+            this.ingredientsWithQuantities = filteredRelations.map(
+              (relation) => {
+                const ingredient = ingredients.find(
+                  (ing) => ing.id === relation.ingredient.id
+                );
+                return {
+                  ingredient: ingredient!,
+                  quantity: relation.quantity,
+                };
+              }
             );
-
-            console.log('Filtered Ingredients:', this.ingredients);
+            this.updateAvailableIngredients();
             this.isLoading = false;
           },
           error: (err) => {
@@ -85,10 +91,12 @@ export class RecipeDetailsPage implements OnInit {
 
   openEditForm() {
     this.isEditing = true;
+    this.originalRecipe = { ...this.recipe };
   }
 
   cancelEdit() {
     this.isEditing = false;
+    this.recipe = { ...this.originalRecipe };
   }
 
   submitEditForm() {
@@ -96,15 +104,12 @@ export class RecipeDetailsPage implements OnInit {
       this.recipeService.updateRecipe(this.recipe.id, this.recipe).subscribe({
         next: () => {
           this.isEditing = false;
-          console.log('Recipe updated successfully');
           this.loadRecipe();
         },
         error: (err) => {
           console.error('Error updating recipe', err);
         },
       });
-    } else {
-      console.error('Recipe ID is missing');
     }
   }
 
@@ -121,15 +126,16 @@ export class RecipeDetailsPage implements OnInit {
       },
     });
   }
-  eliminarRelacion(ingredientId: number) {
+
+  deleteRelacion(ingredientId: number) {
     this.ingredientsRecipesService
       .deleteIngredientRecipe(this.id, ingredientId)
       .subscribe(
         (response) => {
-          console.log('Ingrediente eliminado', response);
-          this.ingredients = this.ingredients.filter(
-            (ingredient) => ingredient.id !== ingredientId
-          );
+          this.ingredientsWithQuantities =
+            this.ingredientsWithQuantities.filter(
+              (item) => item.ingredient.id !== ingredientId
+            );
         },
         (error) => {
           console.error('Error al eliminar ingrediente', error);
@@ -137,7 +143,66 @@ export class RecipeDetailsPage implements OnInit {
       );
   }
 
-  agregarIngrediente() {
-    console.log('Agregar nuevo ingrediente');
+  deleteRecipe() {
+    if (this.id) {
+      this.recipeService.deleteRecipe(this.id).subscribe({
+        next: () => {
+          console.log('Receta eliminada exitosamente');
+        },
+        error: (err) => console.error('Error eliminando la receta', err),
+      });
+    }
+  }
+
+  private updateAvailableIngredients() {
+    this.availableIngredients = this.ingredients.filter(
+      (ingredient) =>
+        !this.ingredientsWithQuantities.some(
+          (item) => item.ingredient.id === ingredient.id
+        )
+    );
+  }
+
+  updateIngredientSelection(selectedIds: number[]) {
+    this.selectedIngredient =
+      this.ingredients.find((ingredient) =>
+        selectedIds.includes(ingredient.id)
+      ) || null;
+  }
+
+  addIngredient() {
+    console.log(this.selectedIngredient + '&' + this.ingredientQuantity);
+    if (this.selectedIngredient && this.ingredientQuantity) {
+      const ingredient = this.selectedIngredient;
+      console.log(
+        'Adding ingredient with ID:',
+        ingredient.id,
+        'to recipe with ID:',
+        this.id
+      );
+      const newRelation = {
+        recipe: { id: this.id },
+        ingredient: { id: ingredient.id },
+        quantity: this.ingredientQuantity.toString(),
+      };
+      console.log(newRelation);
+      this.ingredientsRecipesService
+        .createIngredientRecipe(newRelation)
+        .subscribe({
+          next: (response) => {
+            console.log('Relation created successfully:', response);
+            this.ingredientsWithQuantities.push({
+              ingredient,
+              quantity: this.ingredientQuantity.toString(),
+            });
+            this.selectedIngredient = null;
+            this.ingredientQuantity = '';
+            this.updateAvailableIngredients();
+          },
+          error: (err) => {
+            console.error('Error adding ingredient:', err);
+          },
+        });
+    }
   }
 }
