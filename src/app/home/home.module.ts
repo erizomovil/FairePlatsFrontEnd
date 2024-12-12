@@ -11,12 +11,17 @@ import { StaticStarsComponent } from '../static-stars/static-stars.component';
 import { AddRecipeFormComponent } from '../add-recipe-form/add-recipe-form.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, HomePageRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    HomePageRoutingModule,
+    StaticStarsComponent,
+  ],
   declarations: [
     HomePage,
     RecipesListComponent,
     CardComponent,
-    StaticStarsComponent,
     AddRecipeFormComponent,
   ],
 })

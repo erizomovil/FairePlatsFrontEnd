@@ -5,6 +5,7 @@ import { IngredientsRecipesService } from '../service/relation.service';
 import { IngredientService } from '../service/ingredient.service';
 import { Recipe } from '../models/recipe.models';
 import { Ingredient } from '../models/ingredient.models';
+import { StaticStarsComponent } from '../static-stars/static-stars.component';
 
 @Component({
   selector: 'app-recipe-details',
@@ -204,5 +205,8 @@ export class RecipeDetailsPage implements OnInit {
           },
         });
     }
+  }
+  handleImageError() {
+    this.recipe.image = 'assets/images/placeholder_image.jpg';
   }
 }

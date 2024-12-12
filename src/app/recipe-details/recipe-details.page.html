@@ -5,85 +5,69 @@
         <ion-icon name="arrow-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Recipe Details</ion-title>
+    <ion-title>{{ isEditing ? 'Edit Recipe' : 'Recipe Details' }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="openEditForm()">
+      <ion-button *ngIf="!isEditing" (click)="openEditForm()">
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="deleteRecipe()">
+      <ion-button *ngIf="!isEditing" (click)="deleteRecipe()">
         <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isEditing" (click)="submitEditForm()">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="isEditing" (click)="cancelEdit()">
+        <ion-icon name="close-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content *ngIf="!isLoading; else loadingTemplate">
-  <ion-card *ngIf="!isEditing && recipe">
-    <ion-card-header>
-      <ion-card-title>{{ recipe.title }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Time:</strong> {{ recipe.time }} minutes</p>
-      <p><strong>Difficulty:</strong> {{ recipe.difficulty }}</p>
-    </ion-card-content>
-  </ion-card>
+  <div class="recipe-details" *ngIf="!isEditing">
+    <div class="recipe-details-image-container">
+      <img
+        [src]="recipe.image || '/img/placeholder_image.jpg'"
+        alt="Imagen de {{ recipe.title }}"
+        class="recipe-details-recipe-image"
+        (error)="handleImageError()"
+      />
+    </div>
 
-  <form *ngIf="isEditing" (ngSubmit)="submitEditForm()">
-    <ion-item>
-      <ion-label position="floating">Título</ion-label>
-      <ion-input [(ngModel)]="recipe.title" name="title" required></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Dificultad</ion-label>
-      <ion-select [(ngModel)]="recipe.difficulty" name="difficulty" required>
-        <ion-select-option value="1">Muy Fácil</ion-select-option>
-        <ion-select-option value="2">Fácil</ion-select-option>
-        <ion-select-option value="3">Normal</ion-select-option>
-        <ion-select-option value="4">Difícil</ion-select-option>
-        <ion-select-option value="5">Muy Difícil</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Tiempo (minutos)</ion-label>
-      <ion-input
-        [(ngModel)]="recipe.time"
-        name="time"
-        type="number"
-        required
-      ></ion-input>
-    </ion-item>
-    <ion-button expand="full" type="submit">Guardar Cambios</ion-button>
-    <ion-button expand="full" color="light" (click)="cancelEdit()"
-      >Cancelar</ion-button
-    >
-  </form>
+    <p class="recipe-details-recipe-title">{{ recipe.title }}</p>
 
-  <ion-list>
-    <ion-list-header>
-      <ion-label>Ingredients</ion-label>
-    </ion-list-header>
-    <ion-item *ngFor="let item of ingredientsWithQuantities">
-      <ion-label *ngIf="item.ingredient"
-        >{{ item.ingredient.title }} - {{ item.quantity }}</ion-label
-      >
-      <ion-icon
-        *ngIf="item.ingredient"
-        name="trash"
-        slot="end"
-        (click)="deleteRelacion(item.ingredient.id)"
-      ></ion-icon>
+    <div class="recipe-details-rating-container">
+      <app-static-stars [rating]="recipe.difficulty"></app-static-stars>
+      <div>
+        <ion-icon name="timer-outline" class="recipe-card-timer"></ion-icon>
+        <span>{{ recipe.time }}'</span>
+      </div>
+    </div>
+
+    <ion-list>
+      <ion-list-header>
+        <ion-label>Ingredients</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let item of ingredientsWithQuantities">
+        <ion-label>
+          {{ item.ingredient.title }} - {{ item.quantity }}
+        </ion-label>
+        <ion-icon
+          name="trash"
+          slot="end"
+          (click)="deleteRelacion(item.ingredient.id)"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <ion-item button (click)="showIngredientSelector = !showIngredientSelector">
+      + Add Ingredient
     </ion-item>
-    <ion-item
-      button
-      (click)="showIngredientSelector = !showIngredientSelector"
-      slot="center"
-    >
-      + Agregar Ingrediente
-    </ion-item>
+
     <ion-item *ngIf="showIngredientSelector">
       <ion-select
         [(ngModel)]="selectedIngredient"
-        placeholder="Seleccionar Ingrediente"
+        placeholder="Select Ingredient"
       >
         <ion-select-option
           *ngFor="let ingredient of availableIngredients"
@@ -93,8 +77,9 @@
         </ion-select-option>
       </ion-select>
     </ion-item>
+
     <ion-item *ngIf="showIngredientSelector">
-      <ion-label position="floating">Cantidad</ion-label>
+      <ion-label position="floating">Quantity</ion-label>
       <ion-input
         type="number"
         [(ngModel)]="ingredientQuantity"
@@ -102,12 +87,48 @@
         required
       ></ion-input>
     </ion-item>
+
     <ion-item *ngIf="showIngredientSelector">
-      <ion-button expand="full" (click)="addIngredient()"
-        >Agregar Ingrediente</ion-button
-      >
+      <ion-button expand="full" (click)="addIngredient()">
+        Add Ingredient
+      </ion-button>
     </ion-item>
-  </ion-list>
+  </div>
+
+  <!-- Edit Recipe Form -->
+  <div *ngIf="isEditing">
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="recipe.title"
+        name="title"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Difficulty</ion-label>
+      <ion-input
+        type="number"
+        [(ngModel)]="recipe.difficulty"
+        name="difficulty"
+        min="1"
+        max="5"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Time (minutes)</ion-label>
+      <ion-input
+        type="number"
+        [(ngModel)]="recipe.time"
+        name="time"
+        required
+      ></ion-input>
+    </ion-item>
+  </div>
 </ion-content>
 
 <ng-template #loadingTemplate>
