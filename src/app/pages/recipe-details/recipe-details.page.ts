@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RecipeService } from '../service/recipe.service';
-import { IngredientsRecipesService } from '../service/relation.service';
-import { IngredientService } from '../service/ingredient.service';
-import { Recipe } from '../models/recipe.models';
-import { Ingredient } from '../models/ingredient.models';
-import { StaticStarsComponent } from '../static-stars/static-stars.component';
+import { RecipeService } from '../../service/recipe.service';
+import { IngredientsRecipesService } from '../../service/relation.service';
+import { IngredientService } from '../../service/ingredient.service';
+import { Recipe } from '../../models/recipe.models';
+import { Ingredient } from '../../models/ingredient.models';
+import { StaticStarsComponent } from '../../components/static-stars/static-stars.component';
 
 @Component({
   selector: 'app-recipe-details',

@@ -5,10 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import { RecipesListComponent } from '../recipes-list/recipes-list.component';
-import { CardComponent } from '../card/card.component';
-import { StaticStarsComponent } from '../static-stars/static-stars.component';
-import { AddRecipeFormComponent } from '../add-recipe-form/add-recipe-form.component';
+import { RecipesListComponent } from '../../components/recipes-list/recipes-list.component';
+import { CardComponent } from '../../components/card/card.component';
+import { StaticStarsComponent } from '../../components/static-stars/static-stars.component';
+import { AddRecipeFormComponent } from '../../components/add-recipe-form/add-recipe-form.component';
 
 @NgModule({
   imports: [

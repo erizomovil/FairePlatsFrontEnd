@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AddRecipeFormComponent } from '../add-recipe-form/add-recipe-form.component';
+import { AddRecipeFormComponent } from '../../components/add-recipe-form/add-recipe-form.component';
 import { ModalController } from '@ionic/angular';
 
 @Component({

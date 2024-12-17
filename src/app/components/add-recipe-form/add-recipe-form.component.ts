@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Recipe } from '../models/recipe.models';
-import { RecipeService } from '../service/recipe.service';
-import { IngredientService } from '../service/ingredient.service';
-import { IngredientsRecipesService } from '../service/relation.service';
-import { Ingredient } from '../models/ingredient.models';
-import { Relation } from '../models/relation.models';
+import { Recipe } from '../../models/recipe.models';
+import { RecipeService } from '../../service/recipe.service';
+import { IngredientService } from '../../service/ingredient.service';
+import { IngredientsRecipesService } from '../../service/relation.service';
+import { Ingredient } from '../../models/ingredient.models';
+import { Relation } from '../../models/relation.models';
 
 @Component({
   selector: 'app-add-recipe-form',

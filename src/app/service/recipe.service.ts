@@ -8,7 +8,6 @@ import { Recipe } from '../models/recipe.models';
 })
 export class RecipeService {
   private apiUrl = 'http://localhost:8080/recipes';
-
   constructor(private http: HttpClient) {}
 
   getRecipes(): Observable<Recipe[]> {

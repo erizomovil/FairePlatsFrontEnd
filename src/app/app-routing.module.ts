@@ -5,7 +5,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () =>
-      import('./home/home.module').then((m) => m.HomePageModule),
+      import('./pages/home/home.module').then((m) => m.HomePageModule),
   },
   {
     path: '',
@@ -15,7 +15,7 @@ const routes: Routes = [
   {
     path: 'recipe-details/:id',
     loadChildren: () =>
-      import('./recipe-details/recipe-details.module').then(
+      import('./pages/recipe-details/recipe-details.module').then(
         (m) => m.RecipeDetailsPageModule
       ),
   },
